@@ -1,0 +1,866 @@
+{
+  "info": {
+    "name": "Social Media App API - Shivam",
+    "_postman_id": "social-media-app-collection",
+    "description": "Complete API collection for Social Media App backend with authentication and test cases",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "postId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "commentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "storyId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('authToken', response.token);",
+                  "    pm.collectionVariables.set('userId', response.user._id);",
+                  "    pm.test('Registration successful', () => {",
+                  "        pm.expect(response.success).to.be.true;",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Test User\",\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Test@123\",\n  \"bio\": \"Test bio\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('authToken', response.token);",
+                  "    pm.collectionVariables.set('userId', response.user._id);",
+                  "    pm.test('Login successful', () => {",
+                  "        pm.expect(response.success).to.be.true;",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Test@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get My Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "me"]
+            }
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user",
+              "host": ["{{baseUrl}}"],
+              "path": ["user"]
+            }
+          }
+        },
+        {
+          "name": "Get User Details by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/userDetails/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "userDetails", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Check Username Exists",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/check-username/testuser",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "check-username", "testuser"]
+            }
+          }
+        },
+        {
+          "name": "Check Email Exists",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/check-email/test@example.com",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "check-email", "test@example.com"]
+            }
+          }
+        },
+        {
+          "name": "Update User Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Updated Name\",\n  \"bio\": \"Updated bio\",\n  \"location\": \"New York\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/update",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "update"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Posts",
+      "item": [
+        {
+          "name": "Create Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('postId', response.post._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "content",
+                  "value": "This is a test post!",
+                  "type": "text"
+                },
+                {
+                  "key": "hashtags",
+                  "value": "test,demo",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/posts",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts"]
+            }
+          }
+        },
+        {
+          "name": "Get All Posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/posts",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts"]
+            }
+          }
+        },
+        {
+          "name": "Get Post by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/posts/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts", "{{postId}}"]
+            }
+          }
+        },
+        {
+          "name": "Edit Post",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated post content\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/posts/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts", "{{postId}}"]
+            }
+          }
+        },
+        {
+          "name": "Like/Unlike Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/posts/{{postId}}/like",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts", "{{postId}}", "like"]
+            }
+          }
+        },
+        {
+          "name": "Get Post Likers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/posts/{{postId}}/likers",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts", "{{postId}}", "likers"]
+            }
+          }
+        },
+        {
+          "name": "Delete Post",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/posts/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts", "{{postId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Comments",
+      "item": [
+        {
+          "name": "Post Comment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('commentId', response.comment._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"postId\": \"{{postId}}\",\n  \"text\": \"Great post!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/comments/post",
+              "host": ["{{baseUrl}}"],
+              "path": ["comments", "post"]
+            }
+          }
+        },
+        {
+          "name": "Get Comments by Post",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comments/post/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["comments", "post", "{{postId}}"]
+            }
+          }
+        },
+        {
+          "name": "Edit Comment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"commentId\": \"{{commentId}}\",\n  \"text\": \"Updated comment text\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/comments/edit",
+              "host": ["{{baseUrl}}"],
+              "path": ["comments", "edit"]
+            }
+          }
+        },
+        {
+          "name": "Like/Unlike Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"commentId\": \"{{commentId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/comments/like",
+              "host": ["{{baseUrl}}"],
+              "path": ["comments", "like"]
+            }
+          }
+        },
+        {
+          "name": "Delete Comment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"commentId\": \"{{commentId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/comments/delete",
+              "host": ["{{baseUrl}}"],
+              "path": ["comments", "delete"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Friend Requests",
+      "item": [
+        {
+          "name": "Send Friend Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"receiverId\": \"{{userId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/friendRequests/send",
+              "host": ["{{baseUrl}}"],
+              "path": ["friendRequests", "send"]
+            }
+          }
+        },
+        {
+          "name": "Get Sent Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/friendRequests/sent",
+              "host": ["{{baseUrl}}"],
+              "path": ["friendRequests", "sent"]
+            }
+          }
+        },
+        {
+          "name": "Get Received Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/friendRequests/received",
+              "host": ["{{baseUrl}}"],
+              "path": ["friendRequests", "received"]
+            }
+          }
+        },
+        {
+          "name": "Accept Friend Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestId\": \"REQUEST_ID_HERE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/friendRequests/accept",
+              "host": ["{{baseUrl}}"],
+              "path": ["friendRequests", "accept"]
+            }
+          }
+        },
+        {
+          "name": "Reject Friend Request",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestId\": \"REQUEST_ID_HERE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/friendRequests/reject",
+              "host": ["{{baseUrl}}"],
+              "path": ["friendRequests", "reject"]
+            }
+          }
+        },
+        {
+          "name": "Get Friends List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/friendRequests/friends",
+              "host": ["{{baseUrl}}"],
+              "path": ["friendRequests", "friends"]
+            }
+          }
+        },
+        {
+          "name": "Cancel Sent Request",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestId\": \"REQUEST_ID_HERE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/friendRequests/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["friendRequests", "cancel"]
+            }
+          }
+        },
+        {
+          "name": "Unfriend",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"friendId\": \"FRIEND_USER_ID_HERE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/friendRequests/unfriend",
+              "host": ["{{baseUrl}}"],
+              "path": ["friendRequests", "unfriend"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Stories",
+      "item": [
+        {
+          "name": "Create Story",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('storyId', response.story._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"My first story!\",\n  \"image\": \"https://example.com/image.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/story/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["story", "create"]
+            }
+          }
+        },
+        {
+          "name": "Get All Stories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/story",
+              "host": ["{{baseUrl}}"],
+              "path": ["story"]
+            }
+          }
+        },
+        {
+          "name": "Delete Story",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/story/{{storyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["story", "{{storyId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get All Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "all"]
+            }
+          }
+        },
+        {
+          "name": "Mark All as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/mark-all-read",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "mark-all-read"]
+            }
+          }
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/mark-read/NOTIFICATION_ID",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "mark-read", "NOTIFICATION_ID"]
+            }
+          }
+        },
+        {
+          "name": "Delete Notification",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/delete/NOTIFICATION_ID",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "delete", "NOTIFICATION_ID"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Saved Items",
+      "item": [
+        {
+          "name": "Toggle Save Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemId\": \"{{postId}}\",\n  \"itemType\": \"Post\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/saves/toggle",
+              "host": ["{{baseUrl}}"],
+              "path": ["saves", "toggle"]
+            }
+          }
+        },
+        {
+          "name": "Get All Saved Items",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "{{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/saves/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["saves", "all"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
